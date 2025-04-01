@@ -11,6 +11,7 @@
     "dev": "node --watch --env-file=.env index.js"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "express": "4.21.2",
     "server": "file:"
   },
