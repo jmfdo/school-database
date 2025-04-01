@@ -15,9 +15,11 @@ datasource db {
 }
 
 model Student {
-  id     String         @id @default(uuid()) @db.Uuid
-  name   String
-  scores StudentScore[]
+  id        String         @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  scores    StudentScore[]
 }
 
 model Score {
@@ -25,15 +27,67 @@ model Score {
   studentId    String         @db.Uuid
   value        Decimal        @db.Decimal(3, 2)
   academicYear Int            @db.Integer
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
   students     StudentScore[]
 }
 
 model StudentScore {
-  id        String  @id @default(uuid()) @db.Uuid
   studentId String  @db.Uuid
   scoreId   String  @db.Uuid
   student   Student @relation(fields: [studentId], references: [id])
   score     Score   @relation(fields: [scoreId], references: [id])
 
-  @@unique([studentId, scoreId])
+  @@id([studentId, scoreId])
+}
+
+model Class {
+  id   String @id @default(uuid()) @db.Uuid
+  name String
+
+  subjectId String  @db.Uuid
+  subject   Subject @relation(fields: [subjectId], references: [id])
+
+  teacherId String  @db.Uuid
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  gradeId String @db.Uuid
+  grade Grade @relation(fields: [gradeId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Teacher {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  classes   Class[]
+}
+
+model Subject {
+  id      String  @id @default(uuid()) @db.Uuid
+  name    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  classes Class[]
+}
+
+model Grade {
+  id   String @id @default(uuid()) @db.Uuid
+  name String
+  year Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  classes Class[]
+}
+
+model User {
+  id String @id @default(uuid()) @db.Uuid
+  name String
+  email String @unique
+  password String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
