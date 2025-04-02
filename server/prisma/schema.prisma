@@ -15,79 +15,44 @@ datasource db {
 }
 
 model Student {
-  id        String         @id @default(uuid()) @db.Uuid
-  name      String
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  scores    StudentScore[]
-}
-
-model Score {
-  id           String         @id @default(uuid()) @db.Uuid
-  studentId    String         @db.Uuid
-  value        Decimal        @db.Decimal(3, 2)
-  academicYear Int            @db.Integer
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  students     StudentScore[]
-}
-
-model StudentScore {
-  studentId String  @db.Uuid
-  scoreId   String  @db.Uuid
-  student   Student @relation(fields: [studentId], references: [id])
-  score     Score   @relation(fields: [scoreId], references: [id])
-
-  @@id([studentId, scoreId])
-}
-
-model Class {
-  id   String @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid())
   name String
-
-  subjectId String  @db.Uuid
-  subject   Subject @relation(fields: [subjectId], references: [id])
-
-  teacherId String  @db.Uuid
-  teacher   Teacher @relation(fields: [teacherId], references: [id])
-
-  gradeId String @db.Uuid
+  gradeId String
   grade Grade @relation(fields: [gradeId], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Teacher {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  classes   Class[]
-}
-
-model Subject {
-  id      String  @id @default(uuid()) @db.Uuid
-  name    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  classes Class[]
+  subject StudentSubject[]
+  score Score[]
 }
 
 model Grade {
-  id   String @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid())
   name String
   year Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  classes Class[]
+  student Student[]
 }
 
-model User {
-  id String @id @default(uuid()) @db.Uuid
+model Subject {
+  id String @id @default(uuid())
   name String
-  email String @unique
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  studentId String
+  student StudentSubject[]
+  socore Score[] 
+}
+
+model StudentSubject {
+  id String @id @default(uuid())
+  name String
+  studentId String
+  subjectId String
+  student Student @relation(fields: [studentId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+}
+
+model Score {
+  id String @id @default(uuid())
+  studentId String
+  subjectId String
+  value Decimal @db.Decimal(3, 2)
+  academicYear String
+  student Student @relation(fields: [studentId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
 }
